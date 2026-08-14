@@ -2,6 +2,9 @@
 import { Link, router, usePage } from '@inertiajs/vue3';
 import { computed, ref, watch } from 'vue';
 import { installPrompt, promptInstall } from '../pwa';
+import IconCalculator from '../Components/Icons/IconCalculator.vue';
+import IconChart from '../Components/Icons/IconChart.vue';
+import IconList from '../Components/Icons/IconList.vue';
 
 const page = usePage();
 const user = computed(() => page.props.auth.user);
@@ -28,9 +31,9 @@ watch(
 );
 
 const menu = [
-    { href: '/', label: 'Kasir', icon: '🧮' },
-    { href: '/riwayat', label: 'Riwayat', icon: '📋' },
-    { href: '/rekap', label: 'Rekap', icon: '📊' },
+    { href: '/', label: 'Kasir', icon: IconCalculator },
+    { href: '/riwayat', label: 'Riwayat', icon: IconList },
+    { href: '/rekap', label: 'Rekap', icon: IconChart },
 ];
 </script>
 
@@ -75,10 +78,10 @@ const menu = [
                     v-for="item in menu"
                     :key="item.href"
                     :href="item.href"
-                    class="flex flex-1 flex-col items-center gap-0.5 py-2.5 text-xs font-medium transition"
+                    class="flex flex-1 flex-col items-center gap-1 py-2.5 text-xs font-medium transition"
                     :class="currentPath === item.href ? 'text-teal-700' : 'text-slate-400'"
                 >
-                    <span class="text-lg leading-none">{{ item.icon }}</span>
+                    <component :is="item.icon" class="size-5" />
                     {{ item.label }}
                 </Link>
             </div>

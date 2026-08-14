@@ -1,5 +1,6 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import IconReceipt from '../../Components/Icons/IconReceipt.vue';
 
 const form = useForm({
     username: '',
@@ -20,8 +21,8 @@ const submit = () => {
     <main class="flex min-h-full flex-col justify-center px-5 py-10">
         <div class="mx-auto w-full max-w-sm">
             <div class="mb-8 text-center">
-                <div class="mx-auto mb-3 flex size-14 items-center justify-center rounded-2xl bg-teal-700 text-2xl">
-                    🧾
+                <div class="mx-auto mb-3 flex size-14 items-center justify-center rounded-2xl bg-teal-700">
+                    <IconReceipt class="size-7 text-white" />
                 </div>
                 <h1 class="text-xl font-semibold text-slate-900">Catatan Usaha</h1>
                 <p class="mt-1 text-sm text-slate-500">Masuk ke toko kamu</p>

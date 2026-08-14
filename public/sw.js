@@ -6,7 +6,9 @@
  * tersimpan bisa tersaji ke akun lain setelah keluar.
  */
 
-const CACHE_VERSION = 'v1';
+// Naikkan setiap kali isi PRECACHE_URLS berubah, agar pengguna lama
+// tidak terus disuguhi versi lama dari cache.
+const CACHE_VERSION = 'v2';
 const CACHE_NAME = `catatan-usaha-${CACHE_VERSION}`;
 const OFFLINE_URL = '/offline.html';
 

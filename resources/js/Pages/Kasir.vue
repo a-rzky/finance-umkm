@@ -2,6 +2,7 @@
 import { Head, useForm } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 import AppLayout from '../Layouts/AppLayout.vue';
+import IconBackspace from '../Components/Icons/IconBackspace.vue';
 import { formatNumber, formatRupiah } from '../rupiah';
 
 const props = defineProps({
@@ -172,10 +173,12 @@ const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '000', '0', 'back'];
                 <button
                     v-for="key in keys"
                     :key="key"
-                    class="rounded-2xl bg-white py-4 text-xl font-semibold text-slate-900 tabular-nums transition active:bg-slate-200"
+                    class="flex items-center justify-center rounded-2xl bg-white py-4 text-xl font-semibold text-slate-900 tabular-nums transition active:bg-slate-200"
+                    :aria-label="key === 'back' ? 'Hapus satu angka' : key"
                     @click="press(key)"
                 >
-                    {{ key === 'back' ? '⌫' : key }}
+                    <IconBackspace v-if="key === 'back'" class="size-6 text-slate-600" />
+                    <template v-else>{{ key }}</template>
                 </button>
             </div>
 

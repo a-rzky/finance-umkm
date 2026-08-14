@@ -2,6 +2,7 @@
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 import AppLayout from '../Layouts/AppLayout.vue';
+import IconMore from '../Components/Icons/IconMore.vue';
 import { formatDayLabel, formatRupiah } from '../rupiah';
 
 const props = defineProps({
@@ -104,10 +105,11 @@ const inputClass =
                                 {{ item.type === 'masuk' ? '+' : '−' }}{{ formatRupiah(item.amount) }}
                             </p>
                             <button
-                                class="shrink-0 rounded-lg px-2 py-1 text-xs text-slate-400 transition active:bg-slate-100"
+                                class="shrink-0 rounded-lg p-1.5 text-slate-400 transition active:bg-slate-100"
+                                aria-label="Pilihan lain"
                                 @click="confirmingDelete = confirmingDelete === item.id ? null : item.id"
                             >
-                                ⋯
+                                <IconMore class="size-4" />
                             </button>
                         </div>
 
