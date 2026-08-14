@@ -1,7 +1,8 @@
 <script setup>
 import { Link, router, usePage } from '@inertiajs/vue3';
 import { computed, ref, watch } from 'vue';
-import { installPrompt, promptInstall } from '../pwa';
+import { canInstall, dismissInstall, promptInstall } from '../pwa';
+import IconClose from '../Components/Icons/IconClose.vue';
 import IconCalculator from '../Components/Icons/IconCalculator.vue';
 import IconChart from '../Components/Icons/IconChart.vue';
 import IconList from '../Components/Icons/IconList.vue';
@@ -55,16 +56,23 @@ const menu = [
         </header>
 
         <main class="mx-auto w-full max-w-lg flex-1 pb-24">
-            <div v-if="installPrompt" class="px-3 pt-3">
-                <div class="flex items-center gap-3 rounded-2xl bg-teal-50 p-3">
+            <div v-if="canInstall" class="px-3 pt-3">
+                <div class="flex items-center gap-2 rounded-2xl bg-teal-50 p-3">
                     <p class="flex-1 text-xs text-teal-900">
                         Pasang di layar utama supaya bisa dibuka seperti aplikasi biasa.
                     </p>
                     <button
-                        class="shrink-0 rounded-xl bg-teal-700 px-3 py-2 text-xs font-semibold text-white"
+                        class="shrink-0 rounded-xl bg-teal-700 px-3 py-2 text-xs font-semibold text-white transition active:bg-teal-800"
                         @click="promptInstall"
                     >
                         Pasang
+                    </button>
+                    <button
+                        class="shrink-0 rounded-lg p-1.5 text-teal-700/60 transition active:bg-teal-100"
+                        aria-label="Tutup tawaran pasang"
+                        @click="dismissInstall"
+                    >
+                        <IconClose class="size-4" />
                     </button>
                 </div>
             </div>

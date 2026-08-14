@@ -1,7 +1,40 @@
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 /** Diisi browser saat aplikasi memenuhi syarat untuk dipasang. */
-export const installPrompt = ref(null);
+const installPrompt = ref(null);
+
+const DISMISS_KEY = 'pwa-install-dismissed';
+
+/**
+ * localStorage bisa dilarang browser (mode penyamaran, setelan privasi).
+ * Kegagalan membaca atau menulis tidak boleh menjatuhkan aplikasi — paling
+ * buruk tawaran pasang muncul lagi nanti.
+ */
+const readDismissed = () => {
+    try {
+        return localStorage.getItem(DISMISS_KEY) === '1';
+    } catch {
+        return false;
+    }
+};
+
+const dismissed = ref(readDismissed());
+
+/**
+ * Tawaran pasang hanya layak tampil bila browser memang menawarkannya
+ * (artinya aplikasi belum terpasang) dan pengguna belum menutupnya.
+ */
+export const canInstall = computed(() => installPrompt.value !== null && !dismissed.value);
+
+export const dismissInstall = () => {
+    dismissed.value = true;
+
+    try {
+        localStorage.setItem(DISMISS_KEY, '1');
+    } catch {
+        // Diabaikan: status tutup cukup berlaku selama sesi ini.
+    }
+};
 
 export const registerServiceWorker = () => {
     if (!('serviceWorker' in navigator)) {
