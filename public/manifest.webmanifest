@@ -1,0 +1,45 @@
+{
+    "name": "Catatan Usaha",
+    "short_name": "Catatan",
+    "description": "Catat uang masuk dan uang keluar usaha, lihat rekapnya per hari.",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "orientation": "portrait",
+    "background_color": "#f1f5f9",
+    "theme_color": "#0f766e",
+    "lang": "id",
+    "dir": "ltr",
+    "icons": [
+        {
+            "src": "/icons/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icons/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icons/icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Catat transaksi",
+            "short_name": "Kasir",
+            "url": "/"
+        },
+        {
+            "name": "Rekap harian",
+            "short_name": "Rekap",
+            "url": "/rekap"
+        }
+    ]
+}
