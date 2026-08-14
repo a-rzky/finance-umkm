@@ -1,36 +1,35 @@
 # Deploy ke Railway
 
-## 1. Siapkan repo
+Aplikasi ini sudah berjalan di Railway:
+**https://finance-umkm-production.up.railway.app**
 
-Railway men-deploy dari repo Git. Project ini belum berupa repo:
+Deploy berlangsung otomatis setiap ada push ke branch `main`.
 
-```bash
-git init
-git add .
-git commit -m "feat: aplikasi pencatatan transaksi UMKM"
-git branch -M main
-git remote add origin <url-repo-kamu>
-git push -u origin main
-```
+## Susunan di Railway
 
-Pastikan `.env` **tidak** ikut ter-commit (sudah masuk `.gitignore`).
+Project `Finance-UMKM` berisi dua service:
 
-## 2. Buat service di Railway
+| Service | Isi |
+| --- | --- |
+| `finance-umkm` | aplikasi, sumbernya repo GitHub `a-rzky/finance-umkm` |
+| `Postgres` | database, image `postgres-ssl:18` dengan volume 5 GB |
 
-1. **New Project → Deploy from GitHub repo**, pilih repo ini.
-2. **New → Database → Add PostgreSQL** di project yang sama.
+Builder yang dipakai Railway adalah **Railpack** (bukan Nixpacks). Railpack
+sudah menangani Laravel dan Vite tanpa konfigurasi tambahan: `composer install`
+dan `npm run build` berjalan sendiri, dan berkas hasil build tersaji di
+`/build/assets/`.
 
-## 3. Isi variabel environment
+## Variabel environment
 
-Di service aplikasi, tab **Variables**:
+Sudah terpasang di service `finance-umkm`:
 
 | Variabel | Nilai |
 | --- | --- |
 | `APP_NAME` | `Catatan Usaha` |
 | `APP_ENV` | `production` |
-| `APP_KEY` | hasil `php artisan key:generate --show` |
+| `APP_KEY` | kunci base64 |
 | `APP_DEBUG` | `false` |
-| `APP_URL` | `https://<domain-railway-kamu>` |
+| `APP_URL` | `https://finance-umkm-production.up.railway.app` |
 | `APP_TIMEZONE` | `Asia/Jakarta` |
 | `DB_CONNECTION` | `pgsql` |
 | `DB_URL` | `${{Postgres.DATABASE_URL}}` |
@@ -39,44 +38,57 @@ Di service aplikasi, tab **Variables**:
 | `CACHE_STORE` | `database` |
 | `LOG_CHANNEL` | `stderr` |
 
-Catatan penting:
+Alasan beberapa pilihan:
 
-- **`APP_KEY` wajib diisi.** Tanpa itu semua session dan cookie terenkripsi gagal.
-- **`APP_DEBUG` harus `false`.** Kalau `true`, stack trace berisi kredensial akan tampil ke pengunjung.
-- `DB_URL` memakai referensi `${{Postgres.DATABASE_URL}}` — Railway mengisinya otomatis, jadi `DB_HOST`/`DB_PASSWORD` tidak perlu diisi.
-- `SESSION_DRIVER`, `QUEUE_CONNECTION`, dan `CACHE_STORE` harus `database`. Filesystem Railway bersifat sementara dan terhapus setiap redeploy.
-- `LOG_CHANNEL=stderr` supaya log muncul di panel Railway, bukan ditulis ke disk yang akan hilang.
+- `DB_URL` memakai referensi antar-service, jadi kredensial database tidak
+  pernah disalin dan tetap benar meski Railway memutarnya.
+- `SESSION_DRIVER`, `QUEUE_CONNECTION`, dan `CACHE_STORE` wajib `database`
+  karena filesystem Railway terhapus setiap redeploy.
+- `LOG_CHANNEL=stderr` supaya log tampil di panel Railway, bukan ditulis ke
+  disk yang akan hilang.
 
-## 4. Jalankan migrasi tiap deploy
+## Migrasi
 
-Di **Settings → Deploy → Pre-Deploy Command**:
+Dijalankan otomatis lewat `railway.json`:
 
+```json
+"preDeployCommand": ["php artisan migrate --force"]
 ```
-php artisan migrate --force
+
+Ditaruh di pre-deploy agar berjalan sekali per deploy, bukan berulang setiap
+container restart. Disimpan di repo, bukan sebagai setelan dashboard, supaya
+perubahannya ikut terekam di riwayat Git.
+
+## PHP 8.4 itu wajib
+
+`composer.json` menyatakan `"php": "^8.4"`. Angka ini bukan preferensi:
+Laravel 13 dan Symfony 8 yang ter-lock menuntut PHP >= 8.4.1. Deploy pertama
+gagal justru karena berkas ini sempat menyebut `^8.3`, sehingga builder dengan
+patuh memasang PHP 8.3.33 lalu `composer install` menolak berjalan.
+
+Kalau suatu saat build gagal dengan keluhan versi PHP, periksa baris itu lebih
+dulu sebelum menyentuh setelan builder.
+
+## Perintah yang sering dipakai
+
+```bash
+railway link -p Finance-UMKM -e production   # sambungkan folder ini
+railway service list                          # status semua service
+railway logs                                  # log aplikasi
+railway logs --build                          # log build
+railway variables --service finance-umkm      # lihat variabel
+railway redeploy                              # deploy ulang tanpa push
 ```
 
-Ditaruh di pre-deploy (bukan di start command) supaya migrasi berjalan sekali
-per deploy, bukan berulang tiap container restart.
+## Yang sudah terverifikasi
 
-## 5. Setelah deploy
+Diperiksa langsung terhadap domain produksi setelah deploy berhasil:
 
-Buka domain Railway, lalu buat toko pertama lewat `/daftar`.
-
-Untuk memastikan PWA aktif: buka di Chrome Android, harus muncul tawaran
-"Tambahkan ke layar utama". PWA hanya jalan di HTTPS — domain Railway sudah
-HTTPS, jadi tidak ada yang perlu diatur.
-
----
-
-## Yang belum terverifikasi
-
-Konfigurasi di atas disusun berdasarkan cara Nixpacks dan Railway bekerja, tapi
-**belum pernah dijalankan di Railway sungguhan** dari sesi ini. Yang sudah
-terbukti jalan adalah aplikasinya sendiri di lingkungan lokal dengan PostgreSQL.
-
-Kalau build gagal, yang paling mungkin jadi penyebab:
-
-- Versi PHP yang dipilih Nixpacks lebih rendah dari `^8.2`. Perbaikannya: tambah
-  variabel `NIXPACKS_PHP_VERSION=8.4`.
-- `npm ci` gagal karena `package-lock.json` tidak ikut ter-commit. Pastikan file
-  itu ada di repo.
+- `/` mengalihkan ke `/masuk` memakai **https** — pengenalan proxy Railway benar
+- Aset Vite ter-build dan tersaji (`app-*.js` 216 KB, `app-*.css` 46 KB)
+- Migrasi berjalan: percobaan masuk memberi respons validasi, bukan galat 500
+- Session tersimpan di database (cookie `catatan-usaha-session` terbentuk)
+- `APP_DEBUG=false` benar-benar berlaku: halaman galat tidak membocorkan
+  stack trace maupun jalur berkas server
+- Berkas PWA tersaji dengan tipe konten yang benar: `manifest.webmanifest`,
+  `sw.js`, `offline.html`, dan ikon
