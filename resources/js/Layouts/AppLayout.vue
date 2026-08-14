@@ -40,7 +40,7 @@ const menu = [
             <div class="mx-auto flex max-w-lg items-center justify-between gap-3">
                 <div class="min-w-0">
                     <p class="truncate text-sm font-semibold text-slate-900">{{ user.business_name }}</p>
-                    <p class="truncate text-xs text-slate-500">{{ user.name }}</p>
+                    <p class="truncate text-xs text-slate-500">{{ user.username }}</p>
                 </div>
                 <button
                     class="shrink-0 rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-500 transition active:bg-slate-100"

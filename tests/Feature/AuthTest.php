@@ -19,16 +19,15 @@ class AuthTest extends TestCase
         $this->get('/rekap')->assertRedirect('/masuk');
     }
 
-    public function test_pendaftaran_membuat_usaha_beserta_kategori_bawaan(): void
+    public function test_pendaftaran_tiga_isian_langsung_masuk_ke_dashboard(): void
     {
         $response = $this->post('/daftar', [
             'business_name' => 'Warung Bu Sri',
-            'name' => 'Sri Wahyuni',
             'username' => 'busri',
             'password' => 'rahasia123',
-            'password_confirmation' => 'rahasia123',
         ]);
 
+        // Tanpa langkah tambahan: selesai daftar langsung berada di dalam aplikasi.
         $response->assertRedirect('/');
         $this->assertAuthenticated();
 
@@ -46,10 +45,8 @@ class AuthTest extends TestCase
     {
         $this->post('/daftar', [
             'business_name' => 'Warung Bu Sri',
-            'name' => 'Sri Wahyuni',
             'username' => 'BuSri',
             'password' => 'rahasia123',
-            'password_confirmation' => 'rahasia123',
         ]);
 
         $this->assertDatabaseHas('users', ['username' => 'busri']);
@@ -61,13 +58,36 @@ class AuthTest extends TestCase
 
         $this->post('/daftar', [
             'business_name' => 'Warung B',
-            'name' => 'Budi',
             'username' => 'busri',
             'password' => 'rahasia123',
-            'password_confirmation' => 'rahasia123',
         ])->assertSessionHasErrors('username');
 
         $this->assertSame(1, User::count());
+        // Toko juga tidak boleh ikut terbentuk saat pendaftaran gagal.
+        $this->assertSame(1, Tenant::count());
+    }
+
+    public function test_kata_sandi_kurang_dari_delapan_karakter_ditolak(): void
+    {
+        $this->post('/daftar', [
+            'business_name' => 'Warung Bu Sri',
+            'username' => 'busri',
+            'password' => 'pendek',
+        ])->assertSessionHasErrors('password');
+
+        $this->assertGuest();
+        $this->assertSame(0, Tenant::count());
+    }
+
+    public function test_nama_toko_wajib_diisi(): void
+    {
+        $this->post('/daftar', [
+            'business_name' => '',
+            'username' => 'busri',
+            'password' => 'rahasia123',
+        ])->assertSessionHasErrors('business_name');
+
+        $this->assertSame(0, User::count());
     }
 
     public function test_bisa_masuk_dengan_nama_pengguna_huruf_besar(): void

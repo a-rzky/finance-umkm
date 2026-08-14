@@ -60,7 +60,7 @@ per deploy, bukan berulang tiap container restart.
 
 ## 5. Setelah deploy
 
-Buka domain Railway, lalu daftar usaha pertama lewat `/daftar`.
+Buka domain Railway, lalu buat toko pertama lewat `/daftar`.
 
 Untuk memastikan PWA aktif: buka di Chrome Android, harus muncul tawaran
 "Tambahkan ke layar utama". PWA hanya jalan di HTTPS — domain Railway sudah

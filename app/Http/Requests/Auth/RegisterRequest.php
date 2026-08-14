@@ -23,7 +23,6 @@ class RegisterRequest extends FormRequest
     {
         return [
             'business_name' => ['required', 'string', 'max:100'],
-            'name' => ['required', 'string', 'max:100'],
             'username' => [
                 'required',
                 'string',
@@ -32,8 +31,7 @@ class RegisterRequest extends FormRequest
                 'regex:/^[a-z0-9._]+$/',
                 'unique:users,username',
             ],
-            'email' => ['nullable', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'confirmed', Password::min(8)],
+            'password' => ['required', Password::min(8)],
         ];
     }
 
@@ -43,10 +41,8 @@ class RegisterRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'business_name' => 'nama usaha',
-            'name' => 'nama pemilik',
+            'business_name' => 'nama toko',
             'username' => 'nama pengguna',
-            'email' => 'email',
             'password' => 'kata sandi',
         ];
     }
@@ -59,8 +55,7 @@ class RegisterRequest extends FormRequest
         return [
             'username.regex' => 'Nama pengguna hanya boleh berisi huruf kecil, angka, titik, dan garis bawah.',
             'username.unique' => 'Nama pengguna ini sudah dipakai. Coba yang lain.',
-            'email.unique' => 'Email ini sudah terdaftar.',
-            'password.confirmed' => 'Ulangi kata sandi belum sama.',
+            'password.min' => 'Kata sandi minimal 8 karakter.',
         ];
     }
 }

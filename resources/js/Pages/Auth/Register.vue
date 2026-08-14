@@ -1,18 +1,18 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
 const form = useForm({
     business_name: '',
-    name: '',
     username: '',
-    email: '',
     password: '',
-    password_confirmation: '',
 });
+
+const showPassword = ref(false);
 
 const submit = () => {
     form.post('/daftar', {
-        onFinish: () => form.reset('password', 'password_confirmation'),
+        onFinish: () => form.reset('password'),
     });
 };
 
@@ -21,19 +21,22 @@ const inputClass =
 </script>
 
 <template>
-    <Head title="Daftar usaha" />
+    <Head title="Daftar toko" />
 
     <main class="flex min-h-full flex-col justify-center px-5 py-10">
         <div class="mx-auto w-full max-w-sm">
             <div class="mb-8 text-center">
-                <h1 class="text-xl font-semibold text-slate-900">Daftar usaha</h1>
-                <p class="mt-1 text-sm text-slate-500">Gratis, langsung bisa dipakai</p>
+                <div class="mx-auto mb-3 flex size-14 items-center justify-center rounded-2xl bg-teal-700 text-2xl">
+                    🧾
+                </div>
+                <h1 class="text-xl font-semibold text-slate-900">Buat toko kamu</h1>
+                <p class="mt-1 text-sm text-slate-500">Tiga isian, langsung bisa dipakai</p>
             </div>
 
             <form class="space-y-4" @submit.prevent="submit">
                 <div>
                     <label for="business_name" class="mb-1.5 block text-sm font-medium text-slate-700">
-                        Nama usaha
+                        Nama toko
                     </label>
                     <input
                         id="business_name"
@@ -45,16 +48,6 @@ const inputClass =
                     />
                     <p v-if="form.errors.business_name" class="mt-1.5 text-sm text-red-600">
                         {{ form.errors.business_name }}
-                    </p>
-                </div>
-
-                <div>
-                    <label for="name" class="mb-1.5 block text-sm font-medium text-slate-700">
-                        Nama pemilik
-                    </label>
-                    <input id="name" v-model="form.name" type="text" placeholder="Sri Wahyuni" :class="inputClass" />
-                    <p v-if="form.errors.name" class="mt-1.5 text-sm text-red-600">
-                        {{ form.errors.name }}
                     </p>
                 </div>
 
@@ -78,52 +71,31 @@ const inputClass =
                 </div>
 
                 <div>
-                    <label for="email" class="mb-1.5 block text-sm font-medium text-slate-700">
-                        Email <span class="font-normal text-slate-400">(opsional)</span>
-                    </label>
-                    <input
-                        id="email"
-                        v-model="form.email"
-                        type="email"
-                        autocomplete="email"
-                        autocapitalize="none"
-                        :class="inputClass"
-                    />
-                    <p class="mt-1.5 text-xs text-slate-500">
-                        Satu-satunya cara memulihkan akun kalau kata sandi lupa.
-                    </p>
-                    <p v-if="form.errors.email" class="mt-1.5 text-sm text-red-600">
-                        {{ form.errors.email }}
-                    </p>
-                </div>
-
-                <div>
                     <label for="password" class="mb-1.5 block text-sm font-medium text-slate-700">
                         Kata sandi
                     </label>
-                    <input
-                        id="password"
-                        v-model="form.password"
-                        type="password"
-                        autocomplete="new-password"
-                        :class="inputClass"
-                    />
+                    <div class="relative">
+                        <input
+                            id="password"
+                            v-model="form.password"
+                            :type="showPassword ? 'text' : 'password'"
+                            autocomplete="new-password"
+                            :class="[inputClass, 'pr-16']"
+                        />
+                        <button
+                            type="button"
+                            class="absolute inset-y-0 right-0 px-4 text-xs font-semibold text-teal-700"
+                            @click="showPassword = !showPassword"
+                        >
+                            {{ showPassword ? 'Tutup' : 'Lihat' }}
+                        </button>
+                    </div>
+                    <p class="mt-1.5 text-xs text-slate-500">
+                        Minimal 8 karakter. Catat baik-baik — belum ada fitur lupa sandi.
+                    </p>
                     <p v-if="form.errors.password" class="mt-1.5 text-sm text-red-600">
                         {{ form.errors.password }}
                     </p>
-                </div>
-
-                <div>
-                    <label for="password_confirmation" class="mb-1.5 block text-sm font-medium text-slate-700">
-                        Ulangi kata sandi
-                    </label>
-                    <input
-                        id="password_confirmation"
-                        v-model="form.password_confirmation"
-                        type="password"
-                        autocomplete="new-password"
-                        :class="inputClass"
-                    />
                 </div>
 
                 <button
@@ -131,12 +103,12 @@ const inputClass =
                     :disabled="form.processing"
                     class="w-full rounded-xl bg-teal-700 px-4 py-3.5 text-base font-semibold text-white transition active:bg-teal-800 disabled:opacity-60"
                 >
-                    {{ form.processing ? 'Memproses…' : 'Daftar' }}
+                    {{ form.processing ? 'Membuat toko…' : 'Buat toko' }}
                 </button>
             </form>
 
             <p class="mt-6 text-center text-sm text-slate-600">
-                Sudah punya akun?
+                Sudah punya toko?
                 <Link href="/masuk" class="font-semibold text-teal-700">Masuk</Link>
             </p>
         </div>

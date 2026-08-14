@@ -33,9 +33,9 @@ class RegisterService
     ];
 
     /**
-     * Mendaftarkan usaha baru beserta pemiliknya.
+     * Mendaftarkan toko baru beserta pemiliknya.
      *
-     * @param  array{business_name: string, name: string, username: string, email: ?string, password: string}  $data
+     * @param  array{business_name: string, username: string, password: string}  $data
      */
     public function register(array $data): User
     {
@@ -45,9 +45,7 @@ class RegisterService
             ]);
 
             $user = new User([
-                'name' => $data['name'],
                 'username' => $data['username'],
-                'email' => $data['email'] ?? null,
                 'password' => $data['password'],
             ]);
             $user->tenant_id = $tenant->id;

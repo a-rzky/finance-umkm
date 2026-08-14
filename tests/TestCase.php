@@ -16,9 +16,7 @@ abstract class TestCase extends BaseTestCase
     {
         return app(RegisterService::class)->register([
             'business_name' => $businessName,
-            'name' => $businessName,
             'username' => $username,
-            'email' => null,
             'password' => 'rahasia123',
         ]);
     }

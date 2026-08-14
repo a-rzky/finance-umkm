@@ -24,7 +24,7 @@ const submit = () => {
                     🧾
                 </div>
                 <h1 class="text-xl font-semibold text-slate-900">Catatan Usaha</h1>
-                <p class="mt-1 text-sm text-slate-500">Masuk untuk mulai mencatat</p>
+                <p class="mt-1 text-sm text-slate-500">Masuk ke toko kamu</p>
             </div>
 
             <form class="space-y-4" @submit.prevent="submit">
@@ -81,8 +81,8 @@ const submit = () => {
             </form>
 
             <p class="mt-6 text-center text-sm text-slate-600">
-                Belum punya akun?
-                <Link href="/daftar" class="font-semibold text-teal-700">Daftar usaha</Link>
+                Belum punya toko?
+                <Link href="/daftar" class="font-semibold text-teal-700">Buat toko</Link>
             </p>
         </div>
     </main>

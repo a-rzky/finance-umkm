@@ -42,7 +42,6 @@ class HandleInertiaRequests extends Middleware
             // Hanya field yang dipakai UI — jangan kirim seluruh model user.
             'auth' => [
                 'user' => $user === null ? null : [
-                    'name' => $user->name,
                     'username' => $user->username,
                     'business_name' => $user->tenant->name,
                 ],

@@ -33,7 +33,8 @@ npm run build       # atau: npm run dev
 php artisan serve
 ```
 
-Buka `http://localhost:8000`, lalu daftar usaha lewat `/daftar`.
+Buka `http://localhost:8000`, lalu buat toko lewat `/daftar` — cukup nama toko,
+nama pengguna, dan kata sandi, langsung masuk ke dashboard.
 
 ## Menjalankan tes
 
@@ -70,6 +71,12 @@ resources/js/
 ```
 
 ## Keputusan rancangan
+
+**Pendaftaran hanya tiga isian dan tidak menyimpan email.** Pemilik warung
+mengisinya sambil berdiri di depan lapak, jadi setiap isian tambahan berarti
+calon pengguna yang berhenti di tengah jalan. Konsekuensinya nyata dan disengaja:
+**belum ada jalur lupa kata sandi** — pemulihan hanya bisa lewat database.
+Menambahkannya nanti butuh satu migration untuk kolom email.
 
 **`occurred_on` bertipe DATE, bukan datetime.** Rekap harian dengan timestamp
 UTC membuat transaksi jam 8 malam WIB tercatat di tanggal berikutnya. Menyimpan
