@@ -16,6 +16,12 @@ return Application::configure(basePath: dirname(__DIR__))
         // mengira koneksi masih HTTP, sehingga URL dan cookie aman jadi salah.
         $middleware->trustProxies(at: '*');
 
+        // Didahulukan agar pengalihan terjadi sebelum session dan CSRF
+        // menyentuh permintaan di host yang salah.
+        $middleware->web(prepend: [
+            \App\Http\Middleware\RedirectToCanonicalHost::class,
+        ]);
+
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
